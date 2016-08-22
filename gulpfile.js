@@ -19,18 +19,12 @@ gulp.task('run', function () {
 
 gulp.task('build', function () {
 	let dotnet = spawn('dotnet', ['build']);
-	dotnet.stdout.on('data', function(data){
-		let buffer = new Buffer(data, 'hex');
-		console.log(buffer.toString('utf8'));
-	})	
+	dotnet.stdout.pipe(process.stdout);
 })
 
 gulp.task('restore', function () {
 	let dotnet = spawn('dotnet', ['restore']);
-	dotnet.stdout.on('data', function(data){
-		let buffer = new Buffer(data, 'hex');
-		console.log(buffer.toString('utf8'));
-	})	
+	dotnet.stdout.pipe(process.stdout);	
 })
 
 gulp.task('help', $.taskListing);
