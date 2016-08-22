@@ -5,19 +5,33 @@
 "use strict";
 
 var gulp = require("gulp");
+var $ = require('gulp-load-plugins')({ lazy: true });
 
 let exec = require('child_process').exec;
 let spawn = require('child_process').spawn;
-let Buffer = require('buffer').Buffer; // buffer and decode lite-server output
+let Buffer = require('buffer').Buffer; // buffer and decode process output
 
 gulp.task('run', function () {
+	// 'dotnet run' auomatically runs 'build'
 	let dotnet = spawn('dotnet', ['run']);
+	dotnet.stdout.pipe(process.stdout);
+})
+
+gulp.task('build', function () {
+	let dotnet = spawn('dotnet', ['build']);
 	dotnet.stdout.on('data', function(data){
 		let buffer = new Buffer(data, 'hex');
 		console.log(buffer.toString('utf8'));
 	})	
 })
 
-gulp.task("default", function() {
-  // place code for your default task here
-});
+gulp.task('restore', function () {
+	let dotnet = spawn('dotnet', ['restore']);
+	dotnet.stdout.on('data', function(data){
+		let buffer = new Buffer(data, 'hex');
+		console.log(buffer.toString('utf8'));
+	})	
+})
+
+gulp.task('help', $.taskListing);
+gulp.task("default", ['help']);
