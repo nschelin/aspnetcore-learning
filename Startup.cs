@@ -20,6 +20,7 @@ namespace AspNetCore
         {
             var builder = new ConfigurationBuilder();
             builder.AddJsonFile("appsettings.json");
+            builder.AddEnvironmentVariables(prefix: "ASPNETCORE_");
             Configuration = builder.Build();
             services.AddSingleton(provider => Configuration);
             services.AddSingleton<IGreeter, Greeting>();
@@ -32,10 +33,16 @@ namespace AspNetCore
         {
             var greeting = greeter.GetGreeting();
             loggerFactory.AddConsole();
+            Console.WriteLine(env.IsDevelopment());
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else {
+                app.Run(async (context) => {
+                    await context.Response.WriteAsync("In Production");
+                });
             }
 
             app.Run(async (context) =>
